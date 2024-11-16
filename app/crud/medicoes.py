@@ -10,8 +10,7 @@ Marina Yumi Kanadani | RM 558404
 Pedro Henrique Martins dos Reis | RM 555306
 '''
 
-import connection
-import validations  # Importando módulo de validações
+from app import validations, connection
 
 # CREATE - Inserir Medição
 def inserir_medicao():
@@ -83,7 +82,6 @@ def inserir_medicao():
     except Exception as e:
         print("Erro ao inserir medição:", e)
 
-
 # READ - Exibir Medição por ID
 def exibir_medicao_por_id():
     try:
@@ -109,7 +107,6 @@ def exibir_medicao_por_id():
     except Exception as e:
         print("Erro ao consultar medição:", e)
 
-
 # READ - Exibir Todas as Medições
 def exibir_todas_medicoes():
     try:
@@ -126,13 +123,13 @@ def exibir_todas_medicoes():
             print("| ID  | Comunidade ID | Sensor ID | Tipo Medição     | Valor    | Data/Hora               |")
             print("|-----|---------------|-----------|------------------|----------|-------------------------|")
             for medicao in medicoes:
-                print(f"| {medicao[0]:<4} | {medicao[1]:<13} | {medicao[2]:<9} | {medicao[3]:<16} | {medicao[4]:<8.2f} | {medicao[5]} |")
+                print(
+                    f"| {medicao[0]:<4} | {medicao[1]:<13} | {medicao[2]:<9} | {medicao[3]:<16} | {medicao[4]:<8.2f} | {medicao[5]} |")
         else:
             print("Nenhuma medição cadastrada.")
 
     except Exception as e:
         print("Erro ao listar todas as medições:", e)
-
 
 # UPDATE - Alterar Medição
 def alterar_medicao():
@@ -156,7 +153,8 @@ def alterar_medicao():
         print(f"Medição encontrada: ID: {medicao[0]}, Tipo: {medicao[1]}, Valor: {medicao[2]:.2f}")
 
         # Novo valor da medição
-        novo_valor = validations.validar_numero("Digite o novo valor da medição (ou deixe vazio para não alterar)", tipo="float", permitir_vazio=True)
+        novo_valor = validations.validar_numero("Digite o novo valor da medição (ou deixe vazio para não alterar)",
+                                                tipo="float", permitir_vazio=True)
 
         # Novo tipo de medição
         novo_tipo = validations.validar_opcao(
@@ -194,7 +192,6 @@ def alterar_medicao():
 
     except Exception as e:
         print("Erro ao alterar medição:", e)
-
 
 # DELETE - Excluir Medição
 def excluir_medicao():

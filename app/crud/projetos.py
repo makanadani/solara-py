@@ -10,8 +10,7 @@ Marina Yumi Kanadani | RM 558404
 Pedro Henrique Martins dos Reis | RM 555306
 '''
 
-import connection
-import validations  # Importar o módulo de validações
+from app import validations, connection
 
 # CREATE - Inserir Projeto Sustentável
 def inserir_projeto():
@@ -63,7 +62,6 @@ def inserir_projeto():
     except Exception as e:
         print("Erro ao inserir projeto:", e)
 
-
 # READ - Exibir Projeto Sustentável por ID
 def exibir_projeto_por_id():
     try:
@@ -113,7 +111,8 @@ def exibir_todos_projetos():
             print("| ID  | Descrição           | Custo       | Status       | Fonte ID | Região ID |")
             print("|-----|---------------------|-------------|--------------|----------|-----------|")
             for projeto in projetos:
-                print(f"| {projeto[0]:<4} | {projeto[1]:<19} | {projeto[2]:<11.2f} | {projeto[3]:<12} | {projeto[4]:<8} | {projeto[5]:<9} |")
+                print(
+                    f"| {projeto[0]:<4} | {projeto[1]:<19} | {projeto[2]:<11.2f} | {projeto[3]:<12} | {projeto[4]:<8} | {projeto[5]:<9} |")
         else:
             print("Nenhum projeto cadastrado.")
 
@@ -142,11 +141,14 @@ def alterar_projeto():
             print("Nenhum projeto encontrado com o ID informado.")
             return
 
-        print(f"Projeto encontrado: ID: {projeto[0]}, Descrição: {projeto[1]}, Custo: {projeto[2]}, Status: {projeto[3]}")
+        print(
+            f"Projeto encontrado: ID: {projeto[0]}, Descrição: {projeto[1]}, Custo: {projeto[2]}, Status: {projeto[3]}")
 
         # Solicitar novas informações
-        descricao = validations.validar_texto("Nova descrição do projeto (ou deixe vazio para não alterar)", permitir_vazio=True)
-        custo = validations.validar_numero("Novo custo do projeto (ou deixe vazio para não alterar)", tipo="float", permitir_vazio=True)
+        descricao = validations.validar_texto("Nova descrição do projeto (ou deixe vazio para não alterar)",
+                                              permitir_vazio=True)
+        custo = validations.validar_numero("Novo custo do projeto (ou deixe vazio para não alterar)", tipo="float",
+                                           permitir_vazio=True)
 
         status = None
         while True:

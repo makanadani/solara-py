@@ -10,8 +10,7 @@ Marina Yumi Kanadani | RM 558404
 Pedro Henrique Martins dos Reis | RM 555306
 '''
 
-import connection
-import validations  # Importar o módulo de validações
+from app import validations, connection
 
 # CREATE - Inserir Empresa
 def inserir_empresa():
@@ -43,7 +42,6 @@ def inserir_empresa():
     except Exception as e:
         print("Erro ao cadastrar empresa:", e)
 
-
 # READ - Exibir Empresa por ID
 def exibir_empresa_por_id():
     try:
@@ -68,7 +66,6 @@ def exibir_empresa_por_id():
     except Exception as e:
         print("Erro ao buscar a empresa:", e)
 
-
 # READ - Exibir Todas as Empresas
 def exibir_todas_empresas():
     try:
@@ -91,7 +88,6 @@ def exibir_todas_empresas():
 
     except Exception as e:
         print("Erro ao exibir empresas:", e)
-
 
 # UPDATE - Alterar Empresa
 def alterar_empresa():
@@ -117,11 +113,13 @@ def alterar_empresa():
         print(f"Empresa encontrada: ID: {empresa[0]}, Nome: {empresa[1]}, CNPJ: {empresa[2]}")
 
         # Solicitar novas informações
-        novo_nome = validations.validar_texto("Novo nome da empresa (ou deixe vazio para não alterar)", permitir_vazio=True)
+        novo_nome = validations.validar_texto("Novo nome da empresa (ou deixe vazio para não alterar)",
+                                              permitir_vazio=True)
         novo_cnpj = None
 
         while True:
-            novo_cnpj = validations.validar_texto("Novo CNPJ da empresa (ou deixe vazio para não alterar)", permitir_vazio=True)
+            novo_cnpj = validations.validar_texto("Novo CNPJ da empresa (ou deixe vazio para não alterar)",
+                                                  permitir_vazio=True)
             if not novo_cnpj:
                 break
             if len(novo_cnpj) == 14 and novo_cnpj.isdigit():
@@ -160,7 +158,6 @@ def alterar_empresa():
     except Exception as e:
         print("Erro ao alterar a empresa:", e)
 
-
 # DELETE - Excluir Empresa
 def excluir_empresa():
     try:
@@ -179,7 +176,8 @@ def excluir_empresa():
         dependencias = cursor.fetchone()[0]
 
         if dependencias > 0:
-            print(f"Não é possível excluir a empresa com ID {id_empresa} porque ela está associada a {dependencias} comunidade(s).")
+            print(
+                f"Não é possível excluir a empresa com ID {id_empresa} porque ela está associada a {dependencias} comunidade(s).")
             return
 
         # Confirmar exclusão

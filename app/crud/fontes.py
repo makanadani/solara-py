@@ -10,8 +10,7 @@ Marina Yumi Kanadani | RM 558404
 Pedro Henrique Martins dos Reis | RM 555306
 '''
 
-import connection
-import validations
+from app import validations, connection
 
 # CREATE - Inserir Tipo de Fonte
 def inserir_tipo_fonte():
@@ -142,4 +141,3 @@ def excluir_tipo_fonte():
         cursor.close()
     except Exception as e:
         print("Erro ao excluir o tipo de fonte:", e)
-2

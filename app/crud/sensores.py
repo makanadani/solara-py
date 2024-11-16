@@ -10,8 +10,7 @@ Marina Yumi Kanadani | RM 558404
 Pedro Henrique Martins dos Reis | RM 555306
 '''
 
-import connection
-import validations  # Importar módulo de validações
+from app import validations, connection
 
 # CREATE - Inserir Sensor
 def inserir_sensor():
@@ -60,7 +59,6 @@ def inserir_sensor():
     except Exception as e:
         print("Erro ao inserir sensor:", e)
 
-
 # READ - Exibir Sensor por ID
 def exibir_sensor_por_id():
     try:
@@ -85,7 +83,6 @@ def exibir_sensor_por_id():
     except Exception as e:
         print("Erro ao consultar sensor:", e)
 
-
 # READ - Exibir Todos os Sensores
 def exibir_todos_sensores():
     try:
@@ -108,7 +105,6 @@ def exibir_todos_sensores():
 
     except Exception as e:
         print("Erro ao listar todos os sensores:", e)
-
 
 # UPDATE - Alterar Sensor
 def alterar_sensor():
@@ -172,7 +168,6 @@ def alterar_sensor():
 
     except Exception as e:
         print("Erro ao alterar sensor:", e)
-
 
 # DELETE - Excluir Sensor
 def excluir_sensor():

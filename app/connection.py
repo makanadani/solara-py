@@ -18,9 +18,9 @@ password = "090790"
 
 # Montando o DSN
 dsn = cx_Oracle.makedsn(
-    host = "oracle.fiap.com.br",
-    port = 1521,
-    service_name = "ORCL"
+    host="oracle.fiap.com.br",
+    port=1521,
+    service_name="ORCL"
 )
 
 # Conectando ao banco de dados Oracle

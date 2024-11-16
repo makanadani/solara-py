@@ -13,6 +13,7 @@ Pedro Henrique Martins dos Reis | RM 555306
 # Importando módulos
 from app.crud import sensores, empresas, projetos, fontes, regioes, emissoes, medicoes, comunidades
 
+
 # Função genérica para exibir menus e chamar CRUDs
 def exibir_menu(titulo, opcoes, crud_module):
     while True:

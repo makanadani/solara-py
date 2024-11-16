@@ -10,8 +10,7 @@ Marina Yumi Kanadani | RM 558404
 Pedro Henrique Martins dos Reis | RM 555306
 '''
 
-import connection
-import validations  # Importando módulo de validações
+from app import validations, connection
 
 # CREATE - Inserir Emissão de Carbono
 def inserir_emissao():
@@ -52,7 +51,6 @@ def inserir_emissao():
     except Exception as e:
         print("Erro ao inserir emissão de carbono:", e)
 
-
 # READ - Exibir Emissão de Carbono por ID
 def exibir_emissao_por_id():
     try:
@@ -77,7 +75,6 @@ def exibir_emissao_por_id():
     except Exception as e:
         print("Erro ao consultar emissão de carbono:", e)
 
-
 # READ - Exibir Todas as Emissões de Carbono
 def exibir_todas_emissoes():
     try:
@@ -100,7 +97,6 @@ def exibir_todas_emissoes():
 
     except Exception as e:
         print("Erro ao listar todas as emissões de carbono:", e)
-
 
 # UPDATE - Alterar Emissão de Carbono
 def alterar_emissao():
@@ -125,7 +121,8 @@ def alterar_emissao():
         print(f"Emissão encontrada: ID: {resultado[0]}, Valor: {resultado[1]:.2f}")
 
         # Novo valor de emissão
-        nova_emissao = validations.validar_numero("Digite o novo valor da emissão de carbono (em toneladas)", tipo="float")
+        nova_emissao = validations.validar_numero("Digite o novo valor da emissão de carbono (em toneladas)",
+                                                  tipo="float")
         if nova_emissao is None or nova_emissao <= 0:
             print("O valor da emissão deve ser maior que zero.")
             return
@@ -146,7 +143,6 @@ def alterar_emissao():
 
     except Exception as e:
         print("Erro ao alterar emissão de carbono:", e)
-
 
 # DELETE - Excluir Emissão de Carbono
 def excluir_emissao():

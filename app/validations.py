@@ -10,6 +10,7 @@ Marina Yumi Kanadani | RM 558404
 Pedro Henrique Martins dos Reis | RM 555306
 '''
 
+
 def validar_numero(mensagem, tipo="int", permitir_vazio=False, mensagem_erro="Entrada inválida."):
     """
     Valida uma entrada numérica do usuário.

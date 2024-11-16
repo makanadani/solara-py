@@ -10,8 +10,7 @@ Marina Yumi Kanadani | RM 558404
 Pedro Henrique Martins dos Reis | RM 555306
 '''
 
-import connection
-import validations
+from app import validations, connection
 
 # Auxiliar - Exibir Regiões Disponíveis
 def exibir_regioes_disponiveis():

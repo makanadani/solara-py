@@ -10,8 +10,7 @@ Marina Yumi Kanadani | RM 558404
 Pedro Henrique Martins dos Reis | RM 555306
 '''
 
-import connection
-import validations  # Importar o módulo de validações
+from app import validations, connection
 
 # CREATE - Inserir Comunidade
 def inserir_comunidade():
@@ -120,7 +119,8 @@ def exibir_todas_comunidades():
             print("| ID  | Nome da Comunidade   | Latitude   | Longitude  | Empresa ID | Região ID |")
             print("|-----|----------------------|------------|------------|------------|-----------|")
             for comunidade in comunidades:
-                print(f"| {comunidade[0]:<4} | {comunidade[1]:<20} | {comunidade[2]:<10.5f} | {comunidade[3]:<10.5f} | {comunidade[4]:<10} | {comunidade[5]:<9} |")
+                print(
+                    f"| {comunidade[0]:<4} | {comunidade[1]:<20} | {comunidade[2]:<10.5f} | {comunidade[3]:<10.5f} | {comunidade[4]:<10} | {comunidade[5]:<9} |")
         else:
             print("Nenhuma comunidade cadastrada.")
 
@@ -149,12 +149,16 @@ def alterar_comunidade():
             print("Nenhuma comunidade encontrada com o ID informado.")
             return
 
-        print(f"Comunidade encontrada: ID: {comunidade[0]}, Nome: {comunidade[1]}, Latitude: {comunidade[2]}, Longitude: {comunidade[3]}")
+        print(
+            f"Comunidade encontrada: ID: {comunidade[0]}, Nome: {comunidade[1]}, Latitude: {comunidade[2]}, Longitude: {comunidade[3]}")
 
         # Solicitar novas informações
-        novo_nome = validations.validar_texto("Novo nome da comunidade (ou deixe vazio para não alterar)", permitir_vazio=True)
-        nova_latitude = validations.validar_numero("Nova latitude da comunidade (ou deixe vazio para não alterar)", tipo="float", permitir_vazio=True)
-        nova_longitude = validations.validar_numero("Nova longitude da comunidade (ou deixe vazio para não alterar)", tipo="float", permitir_vazio=True)
+        novo_nome = validations.validar_texto("Novo nome da comunidade (ou deixe vazio para não alterar)",
+                                              permitir_vazio=True)
+        nova_latitude = validations.validar_numero("Nova latitude da comunidade (ou deixe vazio para não alterar)",
+                                                   tipo="float", permitir_vazio=True)
+        nova_longitude = validations.validar_numero("Nova longitude da comunidade (ou deixe vazio para não alterar)",
+                                                    tipo="float", permitir_vazio=True)
 
         # Montar a query dinamicamente
         query = "UPDATE tb_comunidades SET "
@@ -210,7 +214,8 @@ def excluir_comunidade():
         dependencias = cursor.fetchone()[0]
 
         if dependencias > 0:
-            print(f"Não é possível excluir a comunidade com ID {id_comunidade} porque está associada a {dependencias} projeto(s).")
+            print(
+                f"Não é possível excluir a comunidade com ID {id_comunidade} porque está associada a {dependencias} projeto(s).")
             return
 
         # Confirmar exclusão
