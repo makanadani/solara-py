@@ -76,7 +76,6 @@ def inserir_comunidade():
     except Exception as e:
         print("Erro ao inserir comunidade:", e)
 
-
 # READ - Exibir Comunidade por ID
 def exibir_comunidade_por_id():
     try:
@@ -178,11 +177,10 @@ def alterar_comunidade():
             print("Nenhuma alteração foi feita.")
             return
 
-        query = query.rstrip(", ")  # Remove a vírgula final
+        query = query.rstrip(", ")
         query += " WHERE id_comunidade = :4"
         params.append(id_comunidade)
 
-        # Executar a query
         cursor.execute(query, params)
         connection.conn.commit()
 

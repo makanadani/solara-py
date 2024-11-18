@@ -141,7 +141,7 @@ def alterar_empresa():
             print("Nenhuma alteração foi feita.")
             return
 
-        query = query.rstrip(", ")  # Remove a vírgula final
+        query = query.rstrip(", ")
         query += " WHERE id_empresa = :3"
         params.append(id_empresa)
 
