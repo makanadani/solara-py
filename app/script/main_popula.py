@@ -8,9 +8,9 @@ from app.script.popula_sensores import inserir_sensores
 def popula_tudo():
     etapas = {
         "Empresas": lambda: inserir_empresas(empresas_reais),
-        "Comunidades": lambda: inserir_comunidades(15),
-        "Sensores IoT": lambda: inserir_sensores(20),
-        "Medições": lambda: inserir_medicoes(50),
+        "Comunidades": lambda: inserir_comunidades(50),
+        "Sensores IoT": lambda: inserir_sensores(300),
+        "Medições": lambda: inserir_medicoes(500),
         "Comunidades e Projetos": inserir_comunidades_projetos,
     }
 
