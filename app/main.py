@@ -11,8 +11,8 @@ Pedro Henrique Martins dos Reis | RM 555306
 """
 
 from fastapi import FastAPI
-from app.routes import router  # Importando as rotas da API
-from app.menu import menu_principal  # Importando o menu principal
+from app.routes.empresas import router
+from app.menu import menu_principal
 import uvicorn
 
 # Criando a aplicação FastAPI

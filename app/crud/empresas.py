@@ -43,12 +43,8 @@ def inserir_empresa():
         print("Erro ao cadastrar empresa:", e)
 
 # READ - Exibir Empresa por ID
-def exibir_empresa_por_id():
+def exibir_empresa_por_id(id_empresa):
     try:
-        id_empresa = validations.validar_numero("Digite o ID da empresa")
-        if id_empresa is None:
-            return
-
         cursor = connection.conn.cursor()
         cursor.execute("""
             SELECT id_empresa, nome_empresa, cnpj_empresa
@@ -59,12 +55,12 @@ def exibir_empresa_por_id():
         cursor.close()
 
         if empresa:
-            print(f"ID: {empresa[0]}, Nome: {empresa[1]}, CNPJ: {empresa[2]}")
-        else:
-            print("Nenhuma empresa encontrada com o ID informado.")
-
+            return {"id_empresa": empresa[0], "nome_empresa": empresa[1], "cnpj_empresa": empresa[2]}
+        return None
     except Exception as e:
         print("Erro ao buscar a empresa:", e)
+        return None
+
 
 # READ - Exibir Todas as Empresas
 def exibir_todas_empresas():
@@ -78,16 +74,14 @@ def exibir_todas_empresas():
         empresas = cursor.fetchall()
         cursor.close()
 
-        if empresas:
-            print("| ID  | Nome da Empresa           | CNPJ         |")
-            print("|-----|---------------------------|--------------|")
-            for empresa in empresas:
-                print(f"| {empresa[0]:<4} | {empresa[1]:<25} | {empresa[2]:<12} |")
-        else:
-            print("Nenhuma empresa cadastrada.")
+        return [
+            {"id_empresa": empresa[0], "nome_empresa": empresa[1], "cnpj_empresa": empresa[2]}
+            for empresa in empresas
+        ]
 
     except Exception as e:
         print("Erro ao exibir empresas:", e)
+        return []
 
 # UPDATE - Alterar Empresa
 def alterar_empresa():
