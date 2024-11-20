@@ -343,6 +343,3 @@ def menu_principal():
         else:
             print("Opção inválida! Por favor, escolha uma opção válida.")
 
-# Execução do menu principal
-if __name__ == "__main__":
-    menu_principal()
