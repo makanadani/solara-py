@@ -84,7 +84,7 @@ def gerar_comunidades(quantidade):
         id_regiao = random.choice(regioes)
         comunidade = random.choice(comunidades_indigenas[id_regiao])
         id_empresa = random.choice(empresas)
-        protocolo = random.randint(100000, 999999)  # Gerando protocolo único
+        protocolo = random.randint(100000, 999999)
 
         comunidades.append((
             id_empresa,
