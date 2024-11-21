@@ -1,6 +1,3 @@
-import random
-from app.connection import conn
-
 comunidades_indigenas = {
     1: [  # Norte
         {"nome": "Yanomami", "latitude": 1.6957, "longitude": -63.0678},
@@ -64,15 +61,22 @@ comunidades_indigenas = {
     ],
 }
 
-def gerar_comunidades(quantidade):
+import random
+
+from app.connection import conn
+
+
+def gerar_comunidades():
     cursor = conn.cursor()
 
+    # Recupera IDs de empresas cadastradas
     cursor.execute("SELECT id_empresa FROM tb_empresas")
     empresas = [empresa[0] for empresa in cursor.fetchall()]
     if not empresas:
         print("Nenhuma empresa cadastrada. Cadastre empresas antes de popular comunidades.")
         return []
 
+    # Recupera IDs de regiões cadastradas
     cursor.execute("SELECT id_regiao FROM tb_regioes_sustentaveis")
     regioes = [regiao[0] for regiao in cursor.fetchall()]
     if not regioes:
@@ -80,40 +84,66 @@ def gerar_comunidades(quantidade):
         return []
 
     comunidades = []
-    for _ in range(quantidade):
-        id_regiao = random.choice(regioes)
-        comunidade = random.choice(comunidades_indigenas[id_regiao])
-        id_empresa = random.choice(empresas)
-        protocolo = random.randint(100000, 999999)
+    comunidades_usadas = set()
 
-        comunidades.append((
-            id_empresa,
-            id_regiao,
-            protocolo,
-            comunidade["nome"],
-            comunidade["latitude"],
-            comunidade["longitude"]
-        ))
+    for id_regiao in regioes:
+        if id_regiao not in comunidades_indigenas:
+            continue
+
+        # Para cada comunidade na região
+        for comunidade in comunidades_indigenas[id_regiao]:
+            comunidade_key = (id_regiao, comunidade["nome"])
+
+            # Evitar duplicatas se já usada
+            if comunidade_key in comunidades_usadas:
+                continue
+
+            # Seleciona uma empresa aleatoriamente para associar à comunidade
+            id_empresa = random.choice(empresas)
+
+            # Gera um protocolo único
+            protocolo = random.randint(100000, 999999)
+
+            # Adiciona a comunidade ao resultado
+            comunidades.append((
+                id_empresa,
+                id_regiao,
+                protocolo,
+                comunidade["nome"],
+                comunidade["latitude"],
+                comunidade["longitude"]
+            ))
+
+            # Marca a comunidade como usada
+            comunidades_usadas.add(comunidade_key)
 
     cursor.close()
     return comunidades
 
-def inserir_comunidades(quantidade):
+def inserir_comunidades():
     try:
         cursor = conn.cursor()
 
-        comunidades = gerar_comunidades(quantidade)
+        # Gera as comunidades
+        comunidades = gerar_comunidades()
         if not comunidades:
             return
 
+        # Insere comunidades no banco de dados
         for comunidade in comunidades:
             cursor.execute("""
-                INSERT INTO tb_comunidades (id_empresa, id_regiao, protocolo_atendimento_comunidade, nome_comunidade, latitude_comunidade, longitude_comunidade)
-                VALUES (:1, :2, :3, :4, :5, :6)
+                INSERT INTO tb_comunidades (
+                    id_empresa,
+                    id_regiao,
+                    protocolo_atendimento_comunidade,
+                    nome_comunidade,
+                    latitude_comunidade,
+                    longitude_comunidade
+                ) VALUES (:1, :2, :3, :4, :5, :6)
             """, comunidade)
 
         conn.commit()
-        print(f"{quantidade} comunidades inseridas automaticamente com sucesso.")
+        print(f"{len(comunidades)} comunidades inseridas automaticamente com sucesso.")
         cursor.close()
     except Exception as e:
         print("Erro ao popular comunidades:", e)

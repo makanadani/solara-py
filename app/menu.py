@@ -13,6 +13,7 @@ import json
 
 import pandas as pd
 
+import queries
 # Importar as funções CRUD
 from crud.comunidades import *
 from crud.emissoes import *
@@ -22,7 +23,7 @@ from crud.medicoes import *
 from crud.projetos import *
 from crud.regioes import *
 from crud.sensores import *
-import queries
+
 
 # Exportar resultados
 def exportar_resultados(dados, colunas, nome_base):

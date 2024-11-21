@@ -15,74 +15,152 @@ from app import validations, connection
 # CREATE - Inserir Comunidade
 def inserir_comunidade():
     try:
-        # Nome da comunidade
-        nome_comunidade = validations.validar_texto("Digite o nome da comunidade")
-        if nome_comunidade is None:
-            return
+        # Solicita e valida o nome da comunidade.
+        while True:
+            nome_comunidade = input("Digite o nome da comunidade (ou 'V' para voltar): ").strip()
+            if nome_comunidade.upper() == "V":
+                print("Voltando ao menu anterior...")
+                return
+            if nome_comunidade:
+                break
+            print("O nome da comunidade não pode estar vazio.")
 
-        # Latitude e Longitude
-        latitude = validations.validar_numero("Digite a latitude da comunidade", tipo="float")
-        if latitude is None:
-            return
+        # Solicita e valida a latitude da comunidade.
+        while True:
+            entrada = input("Digite a latitude da comunidade (Formato: 00,00000) (ou 'V' para voltar): ").strip()
+            if entrada.upper() == "V":
+                print("Voltando ao menu anterior...")
+                return
+            try:
+                latitude = float(entrada)
+                if -90 <= latitude <= 90:
+                    break
+                else:
+                    print("A latitude deve estar entre -90 e 90 graus.")
+            except ValueError:
+                print("Entrada inválida. Insira um número no formato correto.")
 
-        longitude = validations.validar_numero("Digite a longitude da comunidade", tipo="float")
-        if longitude is None:
-            return
+        # Solicita e valida a longitude da comunidade.
+        while True:
+            entrada = input("Digite a longitude da comunidade (Formato: 000,00000) (ou 'V' para voltar): ").strip()
+            if entrada.upper() == "V":
+                print("Voltando ao menu anterior...")
+                return
+            try:
+                longitude = float(entrada)
+                if -180 <= longitude <= 180:
+                    break
+                else:
+                    print("A longitude deve estar entre -180 e 180 graus.")
+            except ValueError:
+                print("Entrada inválida. Insira um número no formato correto.")
 
-        # Empresa associada
+        # Conecta ao banco para buscar empresas cadastradas.
         cursor = connection.conn.cursor()
         cursor.execute("SELECT id_empresa, nome_empresa FROM tb_empresas")
         empresas = cursor.fetchall()
-        if not empresas:
-            print("Nenhuma empresa disponível. Cadastre uma empresa antes.")
+
+        if not empresas:  # Verifica se há empresas cadastradas no banco.
+            print("Nenhuma empresa cadastrada.")
             return
 
+        # Exibe as empresas disponíveis.
         print("| ID | Nome da Empresa |")
         for empresa in empresas:
             print(f"| {empresa[0]:<2} | {empresa[1]:<20} |")
 
-        id_empresa = validations.validar_id_existente(
-            "ID da empresa associada", [empresa[0] for empresa in empresas]
-        )
-        if id_empresa is None:
-            return
+        # Solicita o ID da empresa associada.
+        while True:
+            entrada = input("ID da empresa associada à comunidade (ou 'V' para voltar): ").strip()
+            if entrada.upper() == "V":
+                print("Voltando ao menu anterior...")
+                return
+            try:
+                id_empresa = int(entrada)
+                if id_empresa in [empresa[0] for empresa in empresas]:
+                    break
+                else:
+                    print("ID inválido. Escolha um ID listado.")
+            except ValueError:
+                print("Entrada inválida. Insira um número válido.")
 
-        # Região associada
+        # Conecta ao banco para buscar as regiões disponíveis.
         cursor.execute("SELECT id_regiao, nome_regiao FROM tb_regioes_sustentaveis")
         regioes = cursor.fetchall()
-        if not regioes:
-            print("Nenhuma região disponível. Cadastre uma região antes.")
+
+        if not regioes:  # Verifica se há regiões cadastradas no banco.
+            print("Nenhuma região cadastrada.")
             return
 
+        # Exibe as regiões disponíveis.
         print("| ID | Nome da Região |")
         for regiao in regioes:
             print(f"| {regiao[0]:<2} | {regiao[1]:<15} |")
 
-        id_regiao = validations.validar_id_existente(
-            "ID da região associada", [regiao[0] for regiao in regioes]
-        )
-        if id_regiao is None:
-            return
+        # Solicita e valida o ID da região.
+        while True:
+            entrada = input("ID da região associada (ou 'V' para voltar): ").strip()
+            if entrada.upper() == "V":
+                print("Voltando ao menu anterior...")
+                return
+            try:
+                id_regiao = int(entrada)
+                if id_regiao in [regiao[0] for regiao in regioes]:
+                    break
+                else:
+                    print("ID inválido. Escolha um ID listado.")
+            except ValueError:
+                print("Entrada inválida. Insira um número válido.")
 
-        # Inserir no banco
+        # Insere os dados da comunidade na tabela `tb_comunidades` do banco.
         cursor.execute("""
             INSERT INTO tb_comunidades (id_empresa, id_regiao, nome_comunidade, latitude_comunidade, longitude_comunidade)
             VALUES (:1, :2, :3, :4, :5)
         """, [id_empresa, id_regiao, nome_comunidade, latitude, longitude])
+
+        # Confirma as mudanças no banco de dados.
         connection.conn.commit()
         print(f"Comunidade '{nome_comunidade}' inserida com sucesso!")
+
+        # Exibe os dados da comunidade recém-adicionada.
+        cursor.execute("""
+            SELECT * FROM tb_comunidades
+            WHERE nome_comunidade = :1
+        """, [nome_comunidade])
+        comunidade_inserida = cursor.fetchone()
+
+        if comunidade_inserida:
+            print("Dados da Comunidade Adicionada:")
+            print(f"ID: {comunidade_inserida[0]}")
+            print(f"Nome: {comunidade_inserida[1]}")
+            print(f"Latitude: {comunidade_inserida[2]}")
+            print(f"Longitude: {comunidade_inserida[3]}")
+            print(f"Empresa Associada: {comunidade_inserida[4]}")
+            print(f"Região Associada: {comunidade_inserida[5]}")
+
+        # Fecha o cursor.
         cursor.close()
 
     except Exception as e:
         print("Erro ao inserir comunidade:", e)
 
+
 # READ - Exibir Comunidade por ID
 def exibir_comunidade_por_id():
     try:
-        id_comunidade = validations.validar_numero("Digite o ID da comunidade")
-        if id_comunidade is None:
-            return
+        # Solicita e valida o ID da comunidade.
+        while True:
+            entrada = input("Digite o ID da comunidade (ou 'V' para voltar): ").strip()
+            if entrada.upper() == "V":
+                print("Voltando ao menu anterior...")
+                return
+            try:
+                id_comunidade = int(entrada)
+                break  # Sai do loop se a entrada for válida.
+            except ValueError:
+                print("Entrada inválida. Insira um número inteiro válido.")
 
+        # Executa a consulta para buscar a comunidade no banco de dados.
         cursor = connection.conn.cursor()
         cursor.execute("""
             SELECT id_comunidade, nome_comunidade, latitude_comunidade, longitude_comunidade, id_empresa, id_regiao
@@ -92,9 +170,14 @@ def exibir_comunidade_por_id():
         comunidade = cursor.fetchone()
         cursor.close()
 
+        # Exibe os resultados ou informa que não encontrou.
         if comunidade:
-            print(f"ID: {comunidade[0]}, Nome: {comunidade[1]}, Latitude: {comunidade[2]}, Longitude: {comunidade[3]}, "
-                  f"Empresa ID: {comunidade[4]}, Região ID: {comunidade[5]}")
+            print(f"ID: {comunidade[0]}")
+            print(f"Nome: {comunidade[1]}")
+            print(f"Latitude: {comunidade[2]}")
+            print(f"Longitude: {comunidade[3]}")
+            print(f"Empresa ID: {comunidade[4]}")
+            print(f"Região ID: {comunidade[5]}")
         else:
             print("Nenhuma comunidade encontrada com o ID informado.")
 
@@ -105,6 +188,7 @@ def exibir_comunidade_por_id():
 # READ - Exibir Todas as Comunidades
 def exibir_todas_comunidades():
     try:
+        # Conecta ao banco e executa a consulta para obter todas as comunidades.
         cursor = connection.conn.cursor()
         cursor.execute("""
             SELECT id_comunidade, nome_comunidade, latitude_comunidade, longitude_comunidade, id_empresa, id_regiao
@@ -114,12 +198,14 @@ def exibir_todas_comunidades():
         comunidades = cursor.fetchall()
         cursor.close()
 
+        # Verifica se há comunidades cadastradas e exibe os resultados.
         if comunidades:
             print("| ID  | Nome da Comunidade   | Latitude   | Longitude  | Empresa ID | Região ID |")
             print("|-----|----------------------|------------|------------|------------|-----------|")
             for comunidade in comunidades:
                 print(
-                    f"| {comunidade[0]:<4} | {comunidade[1]:<20} | {comunidade[2]:<10.5f} | {comunidade[3]:<10.5f} | {comunidade[4]:<10} | {comunidade[5]:<9} |")
+                    f"| {comunidade[0]:<4} | {comunidade[1]:<20} | {comunidade[2]:<10.5f} | {comunidade[3]:<10.5f} | {comunidade[4]:<10} | {comunidade[5]:<9} |"
+                )
         else:
             print("Nenhuma comunidade cadastrada.")
 
