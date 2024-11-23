@@ -9,12 +9,12 @@ Adonay Rodrigues da Rocha | RM 558782
 Marina Yumi Kanadani | RM 558404
 Pedro Henrique Martins dos Reis | RM 555306
 '''
+
 import json
 
 import pandas as pd
 
 import queries
-# Importar as funções CRUD
 from crud.comunidades import *
 from crud.emissoes import *
 from crud.empresas import *
@@ -23,7 +23,6 @@ from crud.medicoes import *
 from crud.projetos import *
 from crud.regioes import *
 from crud.sensores import *
-
 
 # Exportar resultados
 def exportar_resultados(dados, colunas, nome_base):
@@ -44,7 +43,7 @@ def exportar_resultados(dados, colunas, nome_base):
     else:
         print("Opção inválida! Nenhum arquivo foi exportado.")
 
-# Menu de consultas
+# Menus
 def menu_consultas():
     while True:
         print("""
@@ -68,8 +67,6 @@ def menu_consultas():
         else:
             print("Opção inválida! Tente novamente.")
 
-
-# Menus individuais
 def menu_fontes():
     while True:
         print("""
@@ -97,7 +94,6 @@ def menu_fontes():
             break
         else:
             print("Opção inválida!")
-
 
 def menu_projetos():
     while True:

@@ -92,7 +92,6 @@ def alterar_empresa():
 
         cursor = connection.conn.cursor()
 
-        # Verificar se a empresa existe
         cursor.execute("""
             SELECT id_empresa, nome_empresa, cnpj_empresa
             FROM tb_empresas
@@ -106,7 +105,6 @@ def alterar_empresa():
 
         print(f"Empresa encontrada: ID: {empresa[0]}, Nome: {empresa[1]}, CNPJ: {empresa[2]}")
 
-        # Solicitar novas informações
         novo_nome = validations.validar_texto("Novo nome da empresa (ou deixe vazio para não alterar)",
                                               permitir_vazio=True)
         novo_cnpj = None
@@ -120,7 +118,6 @@ def alterar_empresa():
                 break
             print("CNPJ inválido. Certifique-se de que possui 14 dígitos numéricos.")
 
-        # Montar a query dinamicamente
         query = "UPDATE tb_empresas SET "
         params = []
 
@@ -139,7 +136,6 @@ def alterar_empresa():
         query += " WHERE id_empresa = :3"
         params.append(id_empresa)
 
-        # Executar a query
         cursor.execute(query, params)
         connection.conn.commit()
 
@@ -161,7 +157,6 @@ def excluir_empresa():
 
         cursor = connection.conn.cursor()
 
-        # Verificar dependências
         cursor.execute("""
             SELECT COUNT(*)
             FROM tb_comunidades
@@ -174,7 +169,6 @@ def excluir_empresa():
                 f"Não é possível excluir a empresa com ID {id_empresa} porque ela está associada a {dependencias} comunidade(s).")
             return
 
-        # Confirmar exclusão
         cursor.execute("""
             SELECT nome_empresa
             FROM tb_empresas
@@ -194,7 +188,6 @@ def excluir_empresa():
             print("Operação de exclusão cancelada.")
             return
 
-        # Excluir a empresa
         cursor.execute("""
             DELETE FROM tb_empresas
             WHERE id_empresa = :1

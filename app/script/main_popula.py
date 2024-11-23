@@ -36,9 +36,6 @@ def popula_tudo():
 
 
 def popula_comunidades_projetos():
-    """
-    Combina as funções de geração e inserção de associações entre comunidades e projetos.
-    """
     comunidades_projetos = gerar_comunidades_projetos()
     if comunidades_projetos:
         inserir_comunidades_projetos(comunidades_projetos)

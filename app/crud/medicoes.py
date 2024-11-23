@@ -15,7 +15,6 @@ from app import validations, connection
 # CREATE - Inserir Medição
 def inserir_medicao():
     try:
-        # Exibir comunidades disponíveis
         cursor = connection.conn.cursor()
         cursor.execute("SELECT id_comunidade, nome_comunidade FROM tb_comunidades")
         comunidades = cursor.fetchall()
@@ -34,7 +33,6 @@ def inserir_medicao():
         if id_comunidade is None:
             return
 
-        # Exibir sensores disponíveis para a comunidade
         cursor.execute("""
             SELECT id_sensor, tipo_sensor, descricao_sensaor
             FROM tb_sensores
@@ -56,7 +54,6 @@ def inserir_medicao():
         if id_sensor is None:
             return
 
-        # Obter tipo de medição
         tipo_medicao = validations.validar_opcao(
             "Escolha o tipo de medição:\n[Produção, Armazenamento, Consumo]",
             ["Produção", "Armazenamento", "Consumo"]
@@ -64,13 +61,11 @@ def inserir_medicao():
         if tipo_medicao is None:
             return
 
-        # Valor da medição
         valor_medicao = validations.validar_numero("Digite o valor da medição", tipo="float")
         if valor_medicao is None or valor_medicao <= 0:
             print("O valor da medição deve ser maior que zero.")
             return
 
-        # Inserir no banco
         cursor.execute("""
             INSERT INTO tb_medicoes (id_comunidade, id_sensor, tipo_medicao, valor_medicao)
             VALUES (:1, :2, :3, :4)
@@ -152,17 +147,14 @@ def alterar_medicao():
 
         print(f"Medição encontrada: ID: {medicao[0]}, Tipo: {medicao[1]}, Valor: {medicao[2]:.2f}")
 
-        # Novo valor da medição
         novo_valor = validations.validar_numero("Digite o novo valor da medição (ou deixe vazio para não alterar)",
                                                 tipo="float", permitir_vazio=True)
 
-        # Novo tipo de medição
         novo_tipo = validations.validar_opcao(
             "Escolha o novo tipo de medição (ou deixe vazio para não alterar):\n[Produção, Armazenamento, Consumo]",
             ["Produção", "Armazenamento", "Consumo"]
         )
 
-        # Montar query dinamicamente
         query = "UPDATE tb_medicoes SET "
         params = []
 
@@ -179,8 +171,6 @@ def alterar_medicao():
 
         query = query.rstrip(", ") + " WHERE id_medicao = :3"
         params.append(id_medicao)
-
-        # Executar atualização
         cursor.execute(query, params)
         connection.conn.commit()
 

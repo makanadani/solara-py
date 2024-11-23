@@ -15,7 +15,6 @@ from app import validations, connection
 # CREATE - Inserir Projeto Sustentável
 def inserir_projeto():
     try:
-        # Passos para inserir o projeto (descrição, custo, status etc.)
         descricao = validations.validar_texto("Descrição do projeto")
         custo = validations.validar_numero("Custo do projeto", tipo="float")
         status_opcao = validations.validar_opcao(
@@ -24,7 +23,6 @@ def inserir_projeto():
         )
         status = "Em andamento" if status_opcao == "1" else "Concluído"
 
-        # Tipo de Fonte
         cursor = connection.conn.cursor()
         cursor.execute("SELECT id_tipo_fonte, nome_fonte FROM tb_tipo_fontes")
         tipos_fontes = cursor.fetchall()
@@ -33,7 +31,6 @@ def inserir_projeto():
             "ID do tipo de fonte associada", [fonte[0] for fonte in tipos_fontes]
         )
 
-        # Comunidade associada
         cursor.execute("SELECT id_comunidade, nome_comunidade FROM tb_comunidades")
         comunidades = cursor.fetchall()
 
@@ -41,7 +38,6 @@ def inserir_projeto():
             "ID da comunidade associada", [com[0] for com in comunidades]
         )
 
-        # Inserir o projeto
         cursor.execute("""
             INSERT INTO tb_projetos_sustentaveis (descricao_projeto, custo_projeto, status_projeto, id_tipo_fonte, id_regiao)
             VALUES (:1, :2, :3, :4, :5)
@@ -50,7 +46,6 @@ def inserir_projeto():
 
         id_projeto = cursor.var(int).getvalue()
 
-        # Inserir na tabela associativa
         cursor.execute("""
             INSERT INTO tb_comunidades_projetos (id_comunidade, id_projeto)
             VALUES (:1, :2)
@@ -65,7 +60,6 @@ def inserir_projeto():
 # READ - Exibir Projeto Sustentável por ID
 def exibir_projeto_por_id():
     try:
-        # Solicitar ID do projeto
         id_projeto = validations.validar_numero("Digite o ID do projeto que deseja visualizar")
         if id_projeto is None:
             return
@@ -124,12 +118,10 @@ def alterar_projeto():
     try:
         cursor = connection.conn.cursor()
 
-        # Solicitar ID do projeto
         id_projeto = validations.validar_numero("Digite o ID do projeto que deseja alterar")
         if id_projeto is None:
             return
 
-        # Verificar se o projeto existe
         cursor.execute("""
             SELECT id_projeto, descricao_projeto, custo_projeto, status_projeto
             FROM tb_projetos_sustentaveis
@@ -144,7 +136,6 @@ def alterar_projeto():
         print(
             f"Projeto encontrado: ID: {projeto[0]}, Descrição: {projeto[1]}, Custo: {projeto[2]}, Status: {projeto[3]}")
 
-        # Solicitar novas informações
         descricao = validations.validar_texto("Nova descrição do projeto (ou deixe vazio para não alterar)",
                                               permitir_vazio=True)
         custo = validations.validar_numero("Novo custo do projeto (ou deixe vazio para não alterar)", tipo="float",
@@ -163,7 +154,6 @@ def alterar_projeto():
                 break
             print("Opção inválida. Escolha '1' ou '2', ou deixe vazio para não alterar.")
 
-        # Montar a query dinamicamente
         query = "UPDATE tb_projetos_sustentaveis SET "
         params = []
 
@@ -181,11 +171,10 @@ def alterar_projeto():
             print("Nenhuma alteração foi feita.")
             return
 
-        query = query.rstrip(", ")  # Remover vírgula final
+        query = query.rstrip(", ")
         query += " WHERE id_projeto = :4"
         params.append(id_projeto)
 
-        # Executar a query
         cursor.execute(query, params)
         connection.conn.commit()
 
@@ -201,14 +190,12 @@ def alterar_projeto():
 # DELETE - Excluir Projeto Sustentável
 def excluir_projeto():
     try:
-        # Solicitar ID do projeto
         id_projeto = validations.validar_numero("Digite o ID do projeto que deseja excluir")
         if id_projeto is None:
             return
 
         cursor = connection.conn.cursor()
 
-        # Confirmar exclusão
         cursor.execute("""
             SELECT descricao_projeto
             FROM tb_projetos_sustentaveis
@@ -228,7 +215,6 @@ def excluir_projeto():
             print("Operação de exclusão cancelada.")
             return
 
-        # Excluir projeto
         cursor.execute("""
             DELETE FROM tb_projetos_sustentaveis
             WHERE id_projeto = :1

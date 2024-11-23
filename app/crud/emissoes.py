@@ -15,7 +15,6 @@ from app import validations, connection
 # CREATE - Inserir Emissão de Carbono
 def inserir_emissao():
     try:
-        # Exibir tipos de fontes disponíveis
         cursor = connection.conn.cursor()
         cursor.execute("SELECT id_tipo_fonte, nome_fonte FROM tb_tipo_fontes")
         tipos_fontes = cursor.fetchall()
@@ -39,7 +38,6 @@ def inserir_emissao():
             print("O valor da emissão deve ser maior que zero.")
             return
 
-        # Inserir no banco
         cursor.execute("""
             INSERT INTO tb_emissoes_carbono (id_tipo_fonte, emissao)
             VALUES (:1, :2)
@@ -105,7 +103,6 @@ def alterar_emissao():
         if id_emissao is None:
             return
 
-        # Verificar se o ID existe
         cursor = connection.conn.cursor()
         cursor.execute("""
             SELECT id_emissao, emissao
@@ -120,14 +117,12 @@ def alterar_emissao():
 
         print(f"Emissão encontrada: ID: {resultado[0]}, Valor: {resultado[1]:.2f}")
 
-        # Novo valor de emissão
         nova_emissao = validations.validar_numero("Digite o novo valor da emissão de carbono (em toneladas)",
                                                   tipo="float")
         if nova_emissao is None or nova_emissao <= 0:
             print("O valor da emissão deve ser maior que zero.")
             return
 
-        # Atualizar no banco
         cursor.execute("""
             UPDATE tb_emissoes_carbono
             SET emissao = :1
@@ -151,7 +146,6 @@ def excluir_emissao():
         if id_emissao is None:
             return
 
-        # Excluir no banco
         cursor = connection.conn.cursor()
         cursor.execute("""
             DELETE FROM tb_emissoes_carbono

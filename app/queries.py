@@ -1,5 +1,18 @@
+'''
+SOLARA
+
+GRUPO
+EcoMinds
+
+INTEGRANTES
+Adonay Rodrigues da Rocha | RM 558782
+Marina Yumi Kanadani | RM 558404
+Pedro Henrique Martins dos Reis | RM 555306
+'''
+
 from app.connection import conecta_banco
 from app.menu import *
+from app.validations import *
 
 # Consulta 1: Comunidades por região
 def consultar_comunidades_por_regiao():
@@ -63,14 +76,39 @@ def consultar_sensores_por_comunidade():
         else:
             print("Nenhum resultado encontrado.")
 
+
+# Consulta 4: Medições por produção
+def exibir_medicoes_por_producao():
+    try:
+        conn = connection.conn
+        cursor = conn.cursor()
+
+        # Consulta para medições do tipo "Produção", incluindo o nome da fonte
+        cursor.execute("""
+            SELECT m.id_medicao, m.id_comunidade, m.id_sensor, m.valor_medicao, m.data_hora_medicao, f.nome_tipo_fonte
+            FROM tb_medicoes m
+            JOIN tb_tipo_fontes f ON m.id_tipo_fonte = f.id_tipo_fonte
+            WHERE m.tipo_medicao = 'Produção'
+            ORDER BY m.data_hora_medicao DESC
+        """)
+
+        medicoes = cursor.fetchall()
+        cursor.close()
+
+        # Exibir resultados
+        if medicoes:
+            print("| ID  | Comunidade ID | Sensor ID | Valor    | Data/Hora               | Tipo da Fonte           |")
+            print("|-----|---------------|-----------|----------|-------------------------|-------------------------|")
+            for medicao in medicoes:
+                print(
+                    f"| {medicao[0]:<4} | {medicao[1]:<13} | {medicao[2]:<9} | {medicao[3]:<8.2f} | {medicao[4]:<23} | {medicao[5]:<23} |")
+        else:
+            print("Nenhuma medição de produção encontrada.")
+
+    except Exception as e:
+        print("Erro ao listar medições por produção:", e)
+
 def exportar_resultados(dados, colunas, nome_base):
-    """
-    :param dados: Resultados da consulta (lista de tuplas).
-    :param colunas: Nomes das colunas dos resultados.
-    :param nome_base: Nome base para o arquivo de saída.
-    """
-
-
     print("Escolha um formato para exportar:")
     print("[1] JSON")
     print("[2] Excel")
@@ -88,3 +126,31 @@ def exportar_resultados(dados, colunas, nome_base):
         print(f"Dados exportados para {nome_arquivo}")
     else:
         print("Opção inválida. Nenhum arquivo foi exportado.")
+
+def exibir_menu():
+    while True:
+        print("\n==== Menu de Consultas ====")
+        print("[1] Consultar comunidades por região")
+        print("[2] Consultar projetos por status")
+        print("[3] Consultar sensores por comunidade")
+        print("[4] Exibir medições por produção")
+        print("[0] Sair")
+
+        opcao = validar_opcao("Escolha uma opção:", ["1", "2", "3", "4", "0"])
+
+        if opcao == "1":
+            consultar_comunidades_por_regiao()
+        elif opcao == "2":
+            consultar_projetos_por_status()
+        elif opcao == "3":
+            consultar_sensores_por_comunidade()
+        elif opcao == "4":
+            exibir_medicoes_por_producao()
+        elif opcao == "0":
+            print("Saindo do programa...")
+            break
+        else:
+            print("Opção inválida! Tente novamente.")
+
+if __name__ == "__main__":
+    exibir_menu()

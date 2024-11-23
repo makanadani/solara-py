@@ -15,7 +15,6 @@ from app import validations, connection
 # CREATE - Inserir Sensor
 def inserir_sensor():
     try:
-        # Exibir comunidades disponíveis
         cursor = connection.conn.cursor()
         cursor.execute("SELECT id_comunidade, nome_comunidade FROM tb_comunidades")
         comunidades = cursor.fetchall()
@@ -34,7 +33,6 @@ def inserir_sensor():
         if id_comunidade is None:
             return
 
-        # Tipo de sensor
         tipo_sensor = validations.validar_opcao(
             "Escolha o tipo de sensor:\n[Produção, Armazenamento, Consumo]",
             ["Produção", "Armazenamento", "Consumo"]
@@ -42,14 +40,8 @@ def inserir_sensor():
         if tipo_sensor is None:
             return
 
-        # Descrição do sensor
-        descricao_sensor = validations.validar_texto("Digite a descrição do sensor")
-        if descricao_sensor is None:
-            return
-
-        # Inserir no banco
         cursor.execute("""
-            INSERT INTO tb_sensores (id_comunidade, tipo_sensor, descricao_sensaor)
+            INSERT INTO tb_sensores (id_comunidade, tipo_sensor)
             VALUES (:1, :2, :3)
         """, [id_comunidade, tipo_sensor, descricao_sensor])
         connection.conn.commit()
@@ -68,7 +60,7 @@ def exibir_sensor_por_id():
 
         cursor = connection.conn.cursor()
         cursor.execute("""
-            SELECT id_sensor, id_comunidade, tipo_sensor, descricao_sensaor
+            SELECT id_sensor, id_comunidade, tipo_sensor
             FROM tb_sensores
             WHERE id_sensor = :1
         """, [id_sensor])
@@ -76,7 +68,7 @@ def exibir_sensor_por_id():
         cursor.close()
 
         if resultado:
-            print(f"ID: {resultado[0]}, Comunidade ID: {resultado[1]}, Tipo: {resultado[2]}, Descrição: {resultado[3]}")
+            print(f"ID: {resultado[0]}, Comunidade ID: {resultado[1]}, Tipo: {resultado[2]}")
         else:
             print("Nenhum sensor encontrado com o ID informado.")
 
@@ -88,7 +80,7 @@ def exibir_todos_sensores():
     try:
         cursor = connection.conn.cursor()
         cursor.execute("""
-            SELECT id_sensor, id_comunidade, tipo_sensor, descricao_sensaor
+            SELECT id_sensor, id_comunidade, tipo_sensor
             FROM tb_sensores
             ORDER BY id_sensor ASC
         """)
@@ -127,18 +119,15 @@ def alterar_sensor():
 
         print(f"Sensor encontrado: ID: {sensor[0]}, Tipo: {sensor[1]}, Descrição: {sensor[2]}")
 
-        # Novo tipo de sensor
         novo_tipo = validations.validar_opcao(
             "Escolha o novo tipo de sensor (ou deixe vazio para não alterar):\n[Produção, Armazenamento, Consumo]",
             ["Produção", "Armazenamento", "Consumo"], permitir_vazio=True
         )
 
-        # Nova descrição do sensor
         nova_descricao = validations.validar_texto(
             "Digite a nova descrição do sensor (ou deixe vazio para não alterar)", permitir_vazio=True
         )
 
-        # Montar query dinamicamente
         query = "UPDATE tb_sensores SET "
         params = []
 
@@ -156,7 +145,6 @@ def alterar_sensor():
         query = query.rstrip(", ") + " WHERE id_sensor = :3"
         params.append(id_sensor)
 
-        # Executar atualização
         cursor.execute(query, params)
         connection.conn.commit()
 

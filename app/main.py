@@ -12,6 +12,5 @@ Pedro Henrique Martins dos Reis | RM 555306
 
 from app.menu import menu_principal
 
-# Execução do menu principal
 if __name__ == "__main__":
     menu_principal()
