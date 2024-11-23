@@ -301,6 +301,7 @@ def menu_empresas():
 def menu_principal():
     while True:
         print("""
+        |========== BEM-VINDO AO SOLARA! ============|
         |================= MENU =====================|
         | [1] Fontes de Energia                      |
         | [2] Projetos Sustentáveis                  |

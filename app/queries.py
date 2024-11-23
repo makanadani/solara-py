@@ -10,9 +10,9 @@ Marina Yumi Kanadani | RM 558404
 Pedro Henrique Martins dos Reis | RM 555306
 '''
 
-from app.connection import conecta_banco
-from app.menu import *
-from app.validations import *
+from connection import conecta_banco
+from menu import *
+from validations import *
 
 # Consulta 1: Comunidades por região
 def consultar_comunidades_por_regiao():

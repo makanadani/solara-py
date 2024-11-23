@@ -15,8 +15,8 @@ Passos para Recriar o Ambiente Virtual (PowerShell)
 - .\.venv\Scripts\Activate.ps1 
 - pip install -r requirements.txt
 
-Para rodar o programa:
+Para rodar o programa (na pasta app):
 - python main.py
 
-Para executar as consultas:
+Para executar as consultas (na pasta app):
 - python queries.py
